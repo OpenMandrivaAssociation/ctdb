@@ -1,6 +1,6 @@
 %define name ctdb
 %define version 1.0
-%define release %mkrel 1
+%define release %mkrel 2
 %define initdir %{_sysconfdir}/init.d
 
 Summary	: Clustered TDB
@@ -13,12 +13,18 @@ URL	: http://ctdb.samba.org/
 Source  : %{name}-%{version}.tar.gz
 BuildRequires: autoconf >= 2.50, automake >= 1.6
 Requires(pre): chkconfig mktemp psmisc fileutils sed 
+Requires(pre,postun): rpm-helper
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
 ctdb is the clustered database used by samba
 
+%package devel
+Summary:        Development files for ctdb
+Group:          Development/Other
 
+%description devel
+devel files for ctdb
 #######################################################################
 %prep
 %setup -q
@@ -67,7 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/ctdb
-%attr(755,root,root) %config %{initdir}/ctdb
+%attr(755,root,root) %{initdir}/ctdb
 %doc doc/*html
 
 %{_sysconfdir}/ctdb/functions
@@ -94,6 +100,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/ctdb.1.*
 %{_mandir}/man1/ctdbd.1.*
 %{_mandir}/man1/onnode.1.*
+
+%files devel
 %{_includedir}/ctdb.h
 %{_includedir}/ctdb_private.h
 
