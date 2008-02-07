@@ -1,24 +1,18 @@
+%define name ctdb
+%define version 1.0
+%define release %mkrel 1
 %define initdir %{_sysconfdir}/init.d
 
-Summary: Clustered TDB
-Vendor: Samba Team
-Packager: Samba Team <samba@samba.org>
-Name: ctdb
-Version: 1.0
-Release: 27
-Epoch: 0
-License: GNU GPL version 3
-Group: System Environment/Daemons
-URL: http://ctdb.samba.org/
-
-Source: ctdb-%{version}.tar.gz
-
-Prereq: /sbin/chkconfig /bin/mktemp /usr/bin/killall
-Prereq: fileutils sed /etc/init.d
-
-Provides: ctdb = %{version}
-
-Prefix: /usr
+Summary	: Clustered TDB
+Name	: %name
+Version	: %version
+Release	: %release
+License	: GPL
+Group	: System/Cluster
+URL	: http://ctdb.samba.org/
+Source  : %{name}-%{version}.tar.gz
+BuildRequires: autoconf >= 2.50, automake >= 1.6
+Requires(pre): chkconfig mktemp psmisc fileutils sed 
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -26,24 +20,16 @@ ctdb is the clustered database used by samba
 
 
 #######################################################################
-
 %prep
 %setup -q
-# setup the init script and sysconfig file
-%setup -T -D -n ctdb-%{version} -q
 
 %build
-
 CC="gcc"
 
 ## always run autogen.sh
 ./autogen.sh
-
-CFLAGS="$RPM_OPT_FLAGS $EXTRA -O0 -D_GNU_SOURCE" ./configure \
-	--prefix=%{_prefix} \
-	--sysconfdir=%{_sysconfdir} \
-	--mandir=%{_mandir} \
-	--localstatedir="/var"
+export CFLAGS="$RPM_OPT_FLAGS $EXTRA -O0 -D_GNU_SOURCE" 
+%configure
 
 make showflags
 make   
@@ -68,18 +54,10 @@ find $RPM_BUILD_ROOT -name "*.old" -exec rm -f {} \;
 rm -rf $RPM_BUILD_ROOT
 
 %post
-[ -x /sbin/chkconfig ] && /sbin/chkconfig --add ctdb
+%_post_service %{name}
 
 %preun
-if [ $1 = 0 ] ; then
-    [ -x /sbin/chkconfig ] && /sbin/chkconfig --del ctdb
-fi
-exit 0
-
-%postun
-if [ "$1" -ge "1" ]; then
-	%{initdir}/ctdb restart >/dev/null 2>&1
-fi	
+%_preun_service %{name}
 
 
 #######################################################################
@@ -88,9 +66,9 @@ fi
 
 %files
 %defattr(-,root,root)
-
 %config(noreplace) %{_sysconfdir}/sysconfig/ctdb
 %attr(755,root,root) %config %{initdir}/ctdb
+%doc doc/*html
 
 %{_sysconfdir}/ctdb/functions
 %{_sysconfdir}/ctdb/events.d/README
@@ -113,9 +91,10 @@ fi
 %{_bindir}/onnode.ssh
 %{_bindir}/onnode.rsh
 %{_bindir}/onnode
-%{_mandir}/man1/ctdb.1.gz
-%{_mandir}/man1/ctdbd.1.gz
-%{_mandir}/man1/onnode.1.gz
+%{_mandir}/man1/ctdb.1.*
+%{_mandir}/man1/ctdbd.1.*
+%{_mandir}/man1/onnode.1.*
 %{_includedir}/ctdb.h
 %{_includedir}/ctdb_private.h
 
+%changelog
