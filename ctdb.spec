@@ -1,6 +1,6 @@
 %define name ctdb
 %define version 1.0
-%define release %mkrel 2
+%define release %mkrel 3
 %define initdir %{_sysconfdir}/init.d
 
 Summary	: Clustered TDB
@@ -12,7 +12,7 @@ Group	: System/Cluster
 URL	: http://ctdb.samba.org/
 Source  : %{name}-%{version}.tar.gz
 BuildRequires: autoconf >= 2.50, automake >= 1.6
-Requires(pre): chkconfig mktemp psmisc fileutils sed 
+Requires(pre): chkconfig mktemp psmisc coreutils sed 
 Requires(pre,postun): rpm-helper
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
