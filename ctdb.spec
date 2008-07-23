@@ -1,6 +1,6 @@
 %define name ctdb
 %define version 1.0
-%define release %mkrel 3
+%define release %mkrel 5
 %define initdir %{_sysconfdir}/init.d
 
 Summary	: Clustered TDB
