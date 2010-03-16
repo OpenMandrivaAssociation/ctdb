@@ -1,6 +1,6 @@
 %define name ctdb
 %define version 1.0.77
-%define release %mkrel 2
+%define release %mkrel 3
 
 Summary: Clustered TDB
 Name: %name
