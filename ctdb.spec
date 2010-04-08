@@ -1,6 +1,6 @@
 %define name ctdb
-%define version 1.0.77
-%define release %mkrel 3
+%define version 1.0.114
+%define release %mkrel 1
 
 Summary: Clustered TDB
 Name: %name
@@ -9,8 +9,7 @@ Release: %release
 License: GPLv3
 Group: System/Cluster
 URL: http://ctdb.samba.org/
-Source: http://ctdb.samba.org/packages/redhat/RHEL5/ctdb-%{version}.tgz
-Patch2: ctdb-fix-fmt.patch
+Source: http://ctdb.samba.org/packages/redhat/RHEL5/ctdb-%{version}.tar.gz
 BuildRequires: autoconf >= 2.50, automake >= 1.6
 Requires(pre): chkconfig mktemp psmisc coreutils sed 
 Requires(pre): rpm-helper
@@ -29,7 +28,6 @@ devel files for ctdb
 
 %prep
 %setup -q
-%patch2 -p1 -b .fmt
 
 %build
 CC="gcc"
@@ -41,6 +39,7 @@ export CFLAGS="$RPM_OPT_FLAGS $EXTRA -O0 -D_GNU_SOURCE"
 
 make showflags
 %make
+perl -pi -e 's/^(Version: *)$/$1 %{version}/g' ctdb.pc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -77,12 +76,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/ctdb/functions
 %{_sysconfdir}/ctdb/events.d/
 %{_sysconfdir}/ctdb/statd-callout
+%{_sysconfdir}/ctdb/*.sh
 %{_sbindir}/ctdbd
 %{_bindir}/ctdb
 %{_bindir}/smnotify
-%{_bindir}/ctdb_ipmux
+#{_bindir}/ctdb_ipmux
 %{_bindir}/ctdb_diagnostics
 %{_bindir}/onnode
+%{_bindir}/ping_pong
 %{_mandir}/man1/ctdb.1.*
 %{_mandir}/man1/ctdbd.1.*
 %{_mandir}/man1/onnode.1.*
@@ -92,5 +93,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_includedir}/ctdb.h
 %{_includedir}/ctdb_private.h
+%{_libdir}/pkgconfig/ctdb.pc
 
 %changelog
