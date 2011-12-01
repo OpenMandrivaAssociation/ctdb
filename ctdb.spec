@@ -42,22 +42,22 @@ make showflags
 perl -pi -e 's/^(Version: *)$/$1 %{version}/g' ctdb.pc
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 mkdir -p %{buildroot}/%{_initrddir}
 
 %makeinstall_std
 
-install -m644 config/ctdb.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/ctdb
-install -m755 config/ctdb.init $RPM_BUILD_ROOT%{_initrddir}/ctdb
+install -m644 config/ctdb.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/ctdb
+install -m755 config/ctdb.init %{buildroot}%{_initrddir}/ctdb
 
 perl -pi -e 's,/var/ctdb,/var/lib/ctdb,g' %{buildroot}/%{_initrddir}/%{name}
 mkdir -p %{buildroot}/var/lib/ctdb
 touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post
 %_post_service %{name}
