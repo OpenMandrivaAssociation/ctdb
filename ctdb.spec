@@ -1,6 +1,6 @@
 %define name ctdb
-%define version 1.0.114
-%define release %mkrel 3
+%define version 1.0.114.4
+%define release %mkrel 1
 
 Summary: Clustered TDB
 Name: %name
@@ -79,12 +79,14 @@ rm -rf %{buildroot}
 %{_sysconfdir}/ctdb/*.sh
 %{_sbindir}/ctdbd
 %{_bindir}/ctdb
+%{_bindir}/ltdbtool
 %{_bindir}/smnotify
 #{_bindir}/ctdb_ipmux
 %{_bindir}/ctdb_diagnostics
 %{_bindir}/onnode
 %{_bindir}/ping_pong
 %{_mandir}/man1/ctdb.1.*
+%{_mandir}/man1/ltdbtool.1.*
 %{_mandir}/man1/ctdbd.1.*
 %{_mandir}/man1/onnode.1.*
 %dir %attr(750,root,root) /var/lib/ctdb
