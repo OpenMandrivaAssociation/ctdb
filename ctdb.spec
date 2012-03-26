@@ -1,6 +1,6 @@
 %define name ctdb
-%define version 1.0.114.4
-%define release %mkrel 1
+%define version 1.13
+%define release 1
 
 Summary: Clustered TDB
 Name: %name
@@ -9,12 +9,11 @@ Release: %release
 License: GPLv3
 Group: System/Cluster
 URL: http://ctdb.samba.org/
-Source: http://ctdb.samba.org/packages/redhat/RHEL5/ctdb-%{version}.tar.gz
+Source0: http://ctdb.samba.org/packages/redhat/RHEL5/ctdb-%{version}.tar.xz
 BuildRequires: autoconf >= 2.50, automake >= 1.6
 Requires(pre): chkconfig mktemp psmisc coreutils sed 
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
 ctdb is the clustered database used by samba
@@ -35,14 +34,13 @@ CC="gcc"
 ## always run autogen.sh
 ./autogen.sh
 export CFLAGS="$RPM_OPT_FLAGS $EXTRA -O0 -D_GNU_SOURCE" 
-%configure
+%configure2_5x --disable-static
 
 make showflags
 %make
 perl -pi -e 's/^(Version: *)$/$1 %{version}/g' ctdb.pc
 
 %install
-rm -rf %{buildroot}
 
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 mkdir -p %{buildroot}/%{_initrddir}
@@ -56,9 +54,6 @@ perl -pi -e 's,/var/ctdb,/var/lib/ctdb,g' %{buildroot}/%{_initrddir}/%{name}
 mkdir -p %{buildroot}/var/lib/ctdb
 touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 
-%clean
-rm -rf %{buildroot}
-
 %post
 %_post_service %{name}
 
@@ -67,7 +62,6 @@ rm -rf %{buildroot}
 
 
 %files
-%defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/ctdb
 %attr(755,root,root) %{_initrddir}/ctdb
 %config(noreplace) %{_sysconfdir}/%{name}/nodes
@@ -89,12 +83,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/ltdbtool.1.*
 %{_mandir}/man1/ctdbd.1.*
 %{_mandir}/man1/onnode.1.*
+%{_mandir}/man1/ping_pong.1.*
 %dir %attr(750,root,root) /var/lib/ctdb
 
 %files devel
-%defattr(-,root,root)
-%{_includedir}/ctdb.h
-%{_includedir}/ctdb_private.h
+%{_includedir}/*.h
 %{_libdir}/pkgconfig/ctdb.pc
-
-%changelog
+%{_libdir}/*.a
