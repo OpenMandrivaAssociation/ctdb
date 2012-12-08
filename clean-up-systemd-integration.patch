@@ -1,0 +1,64 @@
+From 89846a826443745e5b4911cd478d93251fef7de5 Mon Sep 17 00:00:00 2001
+From: Jeff Layton <jlayton@redhat.com>
+Date: Wed, 22 Aug 2012 11:51:40 -0400
+Subject: [PATCH] ctdb: clean up systemd integration
+
+This fixes a number of problems:
+
+1) Removes extra quoting around $CTDB_OPTIONS. Adding quotes around it
+makes the shell pass them as one giant argument.
+
+2) Removes the extraneous single quotes around the values in
+build_ctdb_options(). ctdbd doesn't know how to strip those out, so
+they shouldn't be added at all.
+
+3) removes the bogus PIDFile= line from ctdb.service. systemd expects
+the daemon to create that file, but ctdb doesn't do so.
+
+Signed-off-by: Jeff Layton <jlayton@redhat.com>
+---
+ config/ctdb.service         | 1 -
+ config/init_functions       | 2 +-
+ config/systemd/ctdb.systemd | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/config/ctdb.service b/config/ctdb.service
+index c3423a6..d6a2c22 100644
+--- a/config/ctdb.service
++++ b/config/ctdb.service
+@@ -5,7 +5,6 @@ After=network.target
+ [Service]
+ Type=forking
+ LimitCORE=infinity
+-PIDFile=/run/ctdbd/ctdbd.pid
+ ExecStartPre=/etc/ctdb/systemd/ctdb_drop_all_public_ips
+ ExecStartPre=/etc/ctdb/systemd/ctdb_check_persistent_databases.pre
+ ExecStart=/etc/ctdb/systemd/ctdb.systemd
+diff --git a/config/init_functions b/config/init_functions
+index 6d3e789..36a5fb4 100644
+--- a/config/init_functions
++++ b/config/init_functions
+@@ -8,7 +8,7 @@ build_ctdb_options () {
+         # then return
+         [ -z "$2" -o \( -n "$3" -a "$3" != "$2" \) ] && return
+ 
+-        val="'$2'"
++        val="$2"
+         case "$1" in
+             --*) sep="=" ;;
+             -*)  sep=" " ;;
+diff --git a/config/systemd/ctdb.systemd b/config/systemd/ctdb.systemd
+index 6f29e85..5c1eb3f 100644
+--- a/config/systemd/ctdb.systemd
++++ b/config/systemd/ctdb.systemd
+@@ -27,6 +27,6 @@ fi
+ 
+ build_ctdb_options
+ 
+-exec $ctdbd "$CTDB_OPTIONS" >/dev/null 2>&1 </dev/null
++exec $ctdbd $CTDB_OPTIONS >/dev/null 2>&1 </dev/null
+ 
+ exit 1
+-- 
+1.7.11.4
+

@@ -15,6 +15,16 @@ Requires(pre): chkconfig mktemp psmisc coreutils sed
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
 
+# Fedora specific patch, ctdb should not be enabled by default in the runlevels
+Patch1: ctdb-no_default_runlevel.patch
+Patch3: 0001-Set-FD_CLOEXEC-for-epoll-file-descriptors.patch
+Patch4: 0001-Fixes-for-various-issues-found-by-Coverity.patch
+
+# Submitted to upstream for review https://lists.samba.org/archive/samba-technical/2011-September/079198.html
+Patch5: 0001-IPv6-neighbor-solicit-cleanup.patch
+
+Patch7: 0002-Add-systemd-support.patch
+
 %description
 ctdb is the clustered database used by samba
 
@@ -27,6 +37,12 @@ devel files for ctdb
 
 %prep
 %setup -q
+
+%patch1 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch7 -p1
 
 %build
 CC="gcc"
@@ -42,28 +58,32 @@ perl -pi -e 's/^(Version: *)$/$1 %{version}/g' ctdb.pc
 
 %install
 
-mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
-mkdir -p %{buildroot}/%{_initrddir}
 
 %makeinstall_std
 
-install -m644 config/ctdb.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/ctdb
-install -m755 config/ctdb.init %{buildroot}%{_initrddir}/ctdb
+mkdir -p %{buildroot}%{_sysconfdir}/ctdb/systemd
+install -m 755 config/systemd/ctdb_check_persistent_databases.pre %{buildroot}%{_sysconfdir}/ctdb/systemd
+install -m 755 config/systemd/ctdb_set_ctdb_variables.post %{buildroot}%{_sysconfdir}/ctdb/systemd
+install -m 755 config/systemd/ctdb_drop_all_public_ips %{buildroot}%{_sysconfdir}/ctdb/systemd
+install -m 755 config/systemd/ctdb.systemd %{buildroot}%{_sysconfdir}/ctdb/systemd
+mkdir -p %{buildroot}%{_unitdir}
+install -m 755 config/ctdb.service %{buildroot}%{_unitdir}
+
 
 perl -pi -e 's,/var/ctdb,/var/lib/ctdb,g' %{buildroot}/%{_initrddir}/%{name}
 mkdir -p %{buildroot}/var/lib/ctdb
 touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 
 %post
-%_post_service %{name}
+%_post_service %{name}.service
 
 %preun
-%_preun_service %{name}
+%_preun_service %{name}.service
 
 
 %files
-%config(noreplace) %{_sysconfdir}/sysconfig/ctdb
-%attr(755,root,root) %{_initrddir}/ctdb
+%config(noreplace) %{_sysconfdir}/ctdb/systemd
+%attr(755,root,root) %{_unitdir}/ctdb.service
 %config(noreplace) %{_sysconfdir}/%{name}/nodes
 %doc doc/*html
 
