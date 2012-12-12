@@ -1,24 +1,23 @@
-%define name ctdb
-%define version 1.13
-%define release 1
-
 Summary: Clustered TDB
-Name: %name
-Version: %version
-Release: %release
+Name: ctdb
+Version: 2.0
+Release: 1
 License: GPLv3
 Group: System/Cluster
 URL: http://ctdb.samba.org/
-Source0: http://ctdb.samba.org/packages/redhat/RHEL5/ctdb-%{version}.tar.xz
+Source0: http://ftp.samba.org/pub/ctdb/ctdb-%{version}.tar.gz
 BuildRequires: autoconf >= 2.50, automake >= 1.6
+BuildRequires: pkgconfig(libtirpc)
+# Stuff that is bundled, but should come from the system
+BuildRequires: pkgconfig(talloc) pkgconfig(tevent) pkgconfig(popt)
 Requires(pre): chkconfig mktemp psmisc coreutils sed 
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
 
 # Fedora specific patch, ctdb should not be enabled by default in the runlevels
 Patch1: ctdb-no_default_runlevel.patch
-Patch3: 0001-Set-FD_CLOEXEC-for-epoll-file-descriptors.patch
-Patch4: 0001-Fixes-for-various-issues-found-by-Coverity.patch
+
+Patch2: ctdb-2.0-linkage.patch
 
 # Submitted to upstream for review https://lists.samba.org/archive/samba-technical/2011-September/079198.html
 Patch5: 0001-IPv6-neighbor-solicit-cleanup.patch
@@ -29,28 +28,28 @@ Patch7: 0002-Add-systemd-support.patch
 ctdb is the clustered database used by samba
 
 %package devel
-Summary:        Development files for ctdb
-Group:          Development/Other
+Summary: Development files for ctdb
+Group: Development/Other
 
 %description devel
 devel files for ctdb
 
 %prep
 %setup -q
-
-%patch1 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch7 -p1
+%apply_patches
 
 %build
-CC="gcc"
+CC="%__cc"
 
 ## always run autogen.sh
 ./autogen.sh
-export CFLAGS="$RPM_OPT_FLAGS $EXTRA -O0 -D_GNU_SOURCE" 
-%configure2_5x --disable-static
+export CFLAGS="$RPM_OPT_FLAGS $EXTRA -D_GNU_SOURCE" 
+%configure2_5x \
+	--disable-static \
+	--without-included-popt \
+	--without-included-talloc \
+	--without-included-tdb \
+	--without-included-tevent
 
 make showflags
 %make

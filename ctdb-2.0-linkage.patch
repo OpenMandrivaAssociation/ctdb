@@ -1,0 +1,11 @@
+--- ctdb-2.0/Makefile.in.bero	2012-12-12 20:39:56.565810986 +0100
++++ ctdb-2.0/Makefile.in	2012-12-12 20:40:03.991722818 +0100
+@@ -61,7 +61,7 @@ LDSHFLAGS=-fPIC -shared
+ SHLD=${CC} ${CFLAGS} ${LDSHFLAGS} -o $@
+ 
+ LIB_FLAGS=@LDFLAGS@ -Llib @LIBS@ $(POPT_LIBS) $(TALLOC_LIBS) $(TEVENT_LIBS) $(TDB_LIBS) \
+-		  @INFINIBAND_LIBS@ @CTDB_PCAP_LDFLAGS@
++		  @INFINIBAND_LIBS@ @CTDB_PCAP_LDFLAGS@ -ltirpc
+ 
+ CTDB_VERSION_H = include/version.h
+ 
