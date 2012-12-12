@@ -45,6 +45,7 @@ CC="%__cc"
 ./autogen.sh
 export CFLAGS="$RPM_OPT_FLAGS $EXTRA -D_GNU_SOURCE" 
 %configure2_5x \
+	--enable-shared \
 	--disable-static \
 	--without-included-popt \
 	--without-included-talloc \
@@ -74,10 +75,10 @@ mkdir -p %{buildroot}/var/lib/ctdb
 touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 
 %post
-%_post_service %{name}.service
+%_post_service %{name}
 
 %preun
-%_preun_service %{name}.service
+%_preun_service %{name}
 
 
 %files
