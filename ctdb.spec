@@ -1,28 +1,24 @@
-Summary: Clustered TDB
-Name: ctdb
-Version: 2.0
-Release: 1
-License: GPLv3
-Group: System/Cluster
-URL: http://ctdb.samba.org/
-Source0: http://ftp.samba.org/pub/ctdb/ctdb-%{version}.tar.gz
-BuildRequires: autoconf >= 2.50, automake >= 1.6
-BuildRequires: pkgconfig(libtirpc)
-# Stuff that is bundled, but should come from the system
-BuildRequires: pkgconfig(talloc) pkgconfig(tevent) pkgconfig(popt)
-Requires(pre): chkconfig mktemp psmisc coreutils sed 
-Requires(pre): rpm-helper
-Requires(postun): rpm-helper
-
+Summary:	Clustered TDB
+Name:		ctdb
+Version:	2.0
+Release:	1
+License:	GPLv3
+Group:		System/Cluster
+Url:		http://ctdb.samba.org/
+Source0:	http://ftp.samba.org/pub/ctdb/ctdb-%{version}.tar.gz
 # Fedora specific patch, ctdb should not be enabled by default in the runlevels
 Patch1: ctdb-no_default_runlevel.patch
-
 Patch2: ctdb-2.0-linkage.patch
-
 # Submitted to upstream for review https://lists.samba.org/archive/samba-technical/2011-September/079198.html
 Patch5: 0001-IPv6-neighbor-solicit-cleanup.patch
-
 Patch7: 0002-Add-systemd-support.patch
+
+BuildRequires:	pkgconfig(libtirpc)
+BuildRequires:	pkgconfig(popt)
+BuildRequires:	pkgconfig(talloc)
+BuildRequires:	pkgconfig(tevent)
+Requires(pre):	chkconfig mktemp psmisc coreutils sed 
+Requires(pre,postun):	rpm-helper
 
 %description
 ctdb is the clustered database used by samba
@@ -54,11 +50,9 @@ export CFLAGS="$RPM_OPT_FLAGS $EXTRA -D_GNU_SOURCE"
 
 make showflags
 %make
-perl -pi -e 's/^(Version: *)$/$1 %{version}/g' ctdb.pc
+sed -i -e 's/^(Version: *)$/$1 %{version}/g' ctdb.pc
 
 %install
-
-
 %makeinstall_std
 
 mkdir -p %{buildroot}%{_sysconfdir}/ctdb/systemd
@@ -68,7 +62,6 @@ install -m 755 config/systemd/ctdb_drop_all_public_ips %{buildroot}%{_sysconfdir
 install -m 755 config/systemd/ctdb.systemd %{buildroot}%{_sysconfdir}/ctdb/systemd
 mkdir -p %{buildroot}%{_unitdir}
 install -m 755 config/ctdb.service %{buildroot}%{_unitdir}
-
 
 perl -pi -e 's,/var/ctdb,/var/lib/ctdb,g' %{buildroot}/%{_initrddir}/%{name}
 mkdir -p %{buildroot}/var/lib/ctdb
