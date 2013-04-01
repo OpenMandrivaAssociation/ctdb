@@ -41,8 +41,6 @@ CC="%__cc"
 ./autogen.sh
 export CFLAGS="$RPM_OPT_FLAGS $EXTRA -D_GNU_SOURCE" 
 %configure2_5x \
-	--enable-shared \
-	--disable-static \
 	--without-included-popt \
 	--without-included-talloc \
 	--without-included-tdb \
