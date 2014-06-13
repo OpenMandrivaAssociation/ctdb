@@ -1,7 +1,7 @@
 Summary:	Clustered TDB
 Name:		ctdb
 Version:	2.0
-Release:	5
+Release:	6
 License:	GPLv3
 Group:		System/Cluster
 Url:		http://ctdb.samba.org/
