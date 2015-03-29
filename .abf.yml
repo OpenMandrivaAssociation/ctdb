@@ -1,2 +1,4 @@
-sources:
+removed_sources:
   ctdb-2.0.tar.gz: aba6d9fcbc7b70c7ebe439e1c9cf60bd98d13bd2
+sources:
+  ctdb-2.5.4.tar.gz: 19d7241d025750632dbfc4dc487bf9ed7ae68bae

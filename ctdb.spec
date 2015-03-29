@@ -1,11 +1,11 @@
 Summary:	Clustered TDB
 Name:		ctdb
-Version:	2.0
-Release:	8
+Version:	2.5.4
+Release:	1
 License:	GPLv3
 Group:		System/Cluster
-Url:		http://ctdb.samba.org/
-Source0:	http://ftp.samba.org/pub/ctdb/ctdb-%{version}.tar.gz
+Url:		https://ctdb.samba.org/
+Source0:	https://ftp.samba.org/pub/ctdb/ctdb-%{version}.tar.gz
 # Fedora specific patch, ctdb should not be enabled by default in the runlevels
 Patch1: ctdb-no_default_runlevel.patch
 Patch2: ctdb-2.0-linkage.patch
