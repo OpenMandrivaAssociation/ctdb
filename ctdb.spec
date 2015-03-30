@@ -10,7 +10,7 @@ Source0:	https://ftp.samba.org/pub/ctdb/ctdb-%{version}.tar.gz
 Patch1: ctdb-no_default_runlevel.patch
 Patch2: ctdb-2.0-linkage.patch
 # Submitted to upstream for review https://lists.samba.org/archive/samba-technical/2011-September/079198.html
-Patch5: 0001-IPv6-neighbor-solicit-cleanup.patch
+#Patch5: 0001-IPv6-neighbor-solicit-cleanup.patch
 Patch7: 0002-Add-systemd-support.patch
 
 BuildRequires:	pkgconfig(libtirpc)
@@ -82,6 +82,12 @@ touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 %{_sysconfdir}/ctdb/events.d/
 %{_sysconfdir}/ctdb/statd-callout
 %{_sysconfdir}/ctdb/*.sh
+%{_sysconfdir}/sudoers.d/ctdb
+%{_sysconfdir}/ctdb/nfs-rpc-checks.d/10.statd.check
+%{_sysconfdir}/ctdb/nfs-rpc-checks.d/20.nfsd.check
+%{_sysconfdir}/ctdb/nfs-rpc-checks.d/30.lockd.check
+%{_sysconfdir}/ctdb/nfs-rpc-checks.d/40.mountd.check
+%{_sysconfdir}/ctdb/nfs-rpc-checks.d/50.rquotad.check
 %{_sbindir}/ctdbd
 %{_bindir}/ctdb
 %{_bindir}/ltdbtool
@@ -90,11 +96,18 @@ touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 %{_bindir}/ctdb_diagnostics
 %{_bindir}/onnode
 %{_bindir}/ping_pong
+%{_bindir}ctdb_event_helper
+%{_bindir}ctdb_lock_helper
 %{_mandir}/man1/ctdb.1.*
 %{_mandir}/man1/ltdbtool.1.*
 %{_mandir}/man1/ctdbd.1.*
 %{_mandir}/man1/onnode.1.*
 %{_mandir}/man1/ping_pong.1.*
+%{_mandir}/man1/ctdbd_wrapper.1.xz
+%{_mandir}/man5/ctdbd.conf.5.xz
+%{_mandir}/man7/ctdb-statistics.7.xz
+%{_mandir}/man7/ctdb-tunables.7.xz
+%{_mandir}/man7/ctdb.7.xz
 %dir %attr(750,root,root) /var/lib/ctdb
 
 %files devel
