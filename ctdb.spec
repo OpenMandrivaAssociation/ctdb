@@ -115,4 +115,3 @@ touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 %files devel
 %{_includedir}/*.h
 %{_libdir}/pkgconfig/ctdb.pc
-%{_libdir}/*.a
