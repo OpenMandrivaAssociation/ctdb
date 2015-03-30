@@ -89,6 +89,8 @@ touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 %{_sysconfdir}/ctdb/nfs-rpc-checks.d/40.mountd.check
 %{_sysconfdir}/ctdb/nfs-rpc-checks.d/50.rquotad.check
 %{_sbindir}/ctdbd
+%{_sbindir}/ctdbd_wrapper
+
 %{_bindir}/ctdb
 %{_bindir}/ltdbtool
 %{_bindir}/smnotify
@@ -96,8 +98,8 @@ touch %{buildroot}/%{_sysconfdir}/ctdb/nodes
 %{_bindir}/ctdb_diagnostics
 %{_bindir}/onnode
 %{_bindir}/ping_pong
-%{_bindir}ctdb_event_helper
-%{_bindir}ctdb_lock_helper
+%{_bindir}/ctdb_event_helper
+%{_bindir}/ctdb_lock_helper
 %{_mandir}/man1/ctdb.1.*
 %{_mandir}/man1/ltdbtool.1.*
 %{_mandir}/man1/ctdbd.1.*
