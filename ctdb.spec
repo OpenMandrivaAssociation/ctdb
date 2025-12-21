@@ -13,6 +13,11 @@ Patch2: ctdb-2.0-linkage.patch
 #Patch5: 0001-IPv6-neighbor-solicit-cleanup.patch
 Patch7: 0002-Add-systemd-support.patch
 
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(popt)
 BuildRequires:	pkgconfig(talloc)
